@@ -1,0 +1,38 @@
+name: checks
+run-name: checks
+on:
+  - pull_request
+
+jobs:
+  nix-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+      - name: Use Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: nix fmt
+        exec: |
+          nix fmt
+          diff=$(git ls-files -m --exclude-standard --deduplicate)
+          if [[ -n "$diff" ]]; then
+            echo "not formatted" >2
+            exit 1
+          fi
+
+  biome-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+      - name: Use Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: biome format --check
+        exec: |
+          nix develop -c biome format .
+          if [[ "$?" -ne 0 ]]; then
+            echo "not formatted" >2
+            exit 1
+          fi
