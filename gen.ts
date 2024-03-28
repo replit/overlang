@@ -49,23 +49,23 @@ class MajorVersionMap extends Map<number, MinorVersionMap> {
 		const builders: string[] = [];
 		const versions: string[] = [];
 		const latestAliases: string[] = [
-			`latest = latest-aliases."${this.latestMajor}.latest";`,
+			`latest = latest-aliases.v${this.latestMajor}_latest;`,
 		];
 
 		for (const [major, minors] of this) {
 			builders.push(`v${major} = callPackage ./build/v${major}.nix {};`);
 			latestAliases.push(
-				`"${major}.latest" = latest-aliases."${major}.${minors.latestMinor}.latest";`,
+				`v${major}_latest = latest-aliases.v${major}_${minors.latestMinor}_latest;`,
 			);
 
 			for (const [minor, patches] of minors) {
 				latestAliases.push(
-					`"${major}.${minor}.latest" = versions."${major}.${minor}.${patches.latestPatch}";`,
+					`v${major}_${minor}_latest = versions.v${major}_${minor}_${patches.latestPatch};`,
 				);
 
 				for (const [patch, meta] of patches) {
 					versions.push(`
-						"${major}.${minor}.${patch}" = build.v${major} {
+						v${major}_${minor}_${patch} = build.v${major} {
 							version = "${major}.${minor}.${patch}";
 							src = fetchurl {
 								url = "${meta.url}";

@@ -5,7 +5,7 @@
   build = {v21 = callPackage ./build/v21.nix {};};
 
   versions = {
-    "21.0.0" = build.v21 {
+    v21_0_0 = build.v21 {
       version = "21.0.0";
       src = fetchurl {
         url = "https://nodejs.org/download/release/v21.0.0/node-v21.0.0.tar.xz";
@@ -13,7 +13,7 @@
       };
     };
 
-    "21.1.0" = build.v21 {
+    v21_1_0 = build.v21 {
       version = "21.1.0";
       src = fetchurl {
         url = "https://nodejs.org/download/release/v21.1.0/node-v21.1.0.tar.xz";
@@ -21,7 +21,7 @@
       };
     };
 
-    "21.2.0" = build.v21 {
+    v21_2_0 = build.v21 {
       version = "21.2.0";
       src = fetchurl {
         url = "https://nodejs.org/download/release/v21.2.0/node-v21.2.0.tar.xz";
@@ -29,7 +29,7 @@
       };
     };
 
-    "21.3.0" = build.v21 {
+    v21_3_0 = build.v21 {
       version = "21.3.0";
       src = fetchurl {
         url = "https://nodejs.org/download/release/v21.3.0/node-v21.3.0.tar.xz";
@@ -37,7 +37,7 @@
       };
     };
 
-    "21.4.0" = build.v21 {
+    v21_4_0 = build.v21 {
       version = "21.4.0";
       src = fetchurl {
         url = "https://nodejs.org/download/release/v21.4.0/node-v21.4.0.tar.xz";
@@ -45,7 +45,7 @@
       };
     };
 
-    "21.5.0" = build.v21 {
+    v21_5_0 = build.v21 {
       version = "21.5.0";
       src = fetchurl {
         url = "https://nodejs.org/download/release/v21.5.0/node-v21.5.0.tar.xz";
@@ -53,7 +53,7 @@
       };
     };
 
-    "21.6.0" = build.v21 {
+    v21_6_0 = build.v21 {
       version = "21.6.0";
       src = fetchurl {
         url = "https://nodejs.org/download/release/v21.6.0/node-v21.6.0.tar.xz";
@@ -61,7 +61,7 @@
       };
     };
 
-    "21.6.1" = build.v21 {
+    v21_6_1 = build.v21 {
       version = "21.6.1";
       src = fetchurl {
         url = "https://nodejs.org/download/release/v21.6.1/node-v21.6.1.tar.xz";
@@ -69,7 +69,7 @@
       };
     };
 
-    "21.6.2" = build.v21 {
+    v21_6_2 = build.v21 {
       version = "21.6.2";
       src = fetchurl {
         url = "https://nodejs.org/download/release/v21.6.2/node-v21.6.2.tar.xz";
@@ -77,7 +77,7 @@
       };
     };
 
-    "21.7.0" = build.v21 {
+    v21_7_0 = build.v21 {
       version = "21.7.0";
       src = fetchurl {
         url = "https://nodejs.org/download/release/v21.7.0/node-v21.7.0.tar.xz";
@@ -85,7 +85,7 @@
       };
     };
 
-    "21.7.1" = build.v21 {
+    v21_7_1 = build.v21 {
       version = "21.7.1";
       src = fetchurl {
         url = "https://nodejs.org/download/release/v21.7.1/node-v21.7.1.tar.xz";
@@ -95,16 +95,16 @@
   };
 
   latest-aliases = {
-    latest = latest-aliases."21.latest";
-    "21.latest" = latest-aliases."21.7.latest";
-    "21.0.latest" = versions."21.0.0";
-    "21.1.latest" = versions."21.1.0";
-    "21.2.latest" = versions."21.2.0";
-    "21.3.latest" = versions."21.3.0";
-    "21.4.latest" = versions."21.4.0";
-    "21.5.latest" = versions."21.5.0";
-    "21.6.latest" = versions."21.6.2";
-    "21.7.latest" = versions."21.7.1";
+    latest = latest-aliases.v21_latest;
+    v21_latest = latest-aliases.v21_7_latest;
+    v21_0_latest = versions.v21_0_0;
+    v21_1_latest = versions.v21_1_0;
+    v21_2_latest = versions.v21_2_0;
+    v21_3_latest = versions.v21_3_0;
+    v21_4_latest = versions.v21_4_0;
+    v21_5_latest = versions.v21_5_0;
+    v21_6_latest = versions.v21_6_2;
+    v21_7_latest = versions.v21_7_1;
   };
 in
   versions // latest-aliases
