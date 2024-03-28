@@ -11,6 +11,9 @@
     ...
   }:
     {
+      overlays = {
+        nodejs = import ./nodejs/overlay.nix;
+      };
     }
     // flake-utils.lib.eachDefaultSystem (system: let
       pkgs = import nixpkgs {
@@ -30,5 +33,7 @@
       packages.update-overlays = pkgs.writeShellScript "update-overlays" ''
         ${pkgs.bun}/bin/bun ${./gen.ts}
       '';
+
+      packages.nodejsVersions = pkgs.callPackage ./nodejs {};
     });
 }
