@@ -13,7 +13,7 @@ jobs:
       - name: Use Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@main
       - name: nix fmt
-        exec: |
+        run: |
           nix fmt
           diff=$(git ls-files -m --exclude-standard --deduplicate)
           if [[ -n "$diff" ]]; then
@@ -30,7 +30,7 @@ jobs:
       - name: Use Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@main
       - name: biome format --check
-        exec: |
+        run: |
           nix develop -c biome format .
           if [[ "$?" -ne 0 ]]; then
             echo "not formatted" >2
