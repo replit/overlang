@@ -3,9 +3,15 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     flake-utils.url = "github:numtide/flake-utils";
+
+    nixpkgs-python = {
+      url = "github:cachix/nixpkgs-python";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
-  outputs = {
+  outputs = inputs @ {
     nixpkgs,
     flake-utils,
     ...
@@ -13,6 +19,7 @@
     {
       overlays = {
         nodejs = import ./nodejs/overlay.nix;
+        python = import ./python/overlay.nix inputs.nixpkgs-python;
       };
     }
     // flake-utils.lib.eachDefaultSystem (system: let
@@ -35,5 +42,6 @@
       '';
 
       packages.nodejsVersions = pkgs.callPackage ./nodejs {};
+      packages.pythonVersions = pkgs.callPackage ./python {inherit (inputs) nixpkgs-python;};
     });
 }
