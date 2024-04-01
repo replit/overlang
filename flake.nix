@@ -30,7 +30,7 @@
 
       formatter = pkgs.alejandra;
 
-      packages.update-overlays = pkgs.writeShellScript "update-overlays" ''
+      packages.update-overlays = pkgs.writeShellScriptBin "update-overlays" ''
         ${pkgs.bun}/bin/bun ${./gen.ts}
       '';
 
