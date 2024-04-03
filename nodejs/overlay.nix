@@ -1,3 +1,3 @@
-final: prev: {
-  nodejsVersions = prev.callPackage (import ./.);
+final: _: {
+  nodeVersions = final.callPackage ./default.nix {};
 }

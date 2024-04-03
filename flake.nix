@@ -32,13 +32,14 @@
           pkgs.alejandra
           pkgs.biome
           pkgs.bun
+          pkgs.nodePackages_latest.typescript-language-server
         ];
       };
 
       formatter = pkgs.alejandra;
 
-      packages.update-overlays = pkgs.writeShellScript "update-overlays" ''
-        ${pkgs.bun}/bin/bun ${./gen.ts}
+      packages.update-overlays = pkgs.writeShellScriptBin "update-overlays" ''
+        ${pkgs.bun}/bin/bun ./gen.ts
       '';
 
       packages.nodejsVersions = pkgs.callPackage ./nodejs {};
