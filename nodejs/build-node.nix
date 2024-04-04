@@ -4,7 +4,7 @@
   stdenv,
   fetchurl,
   openssl,
-  python3,
+  python,
   zlib,
   libuv,
   util-linux,
@@ -30,9 +30,11 @@
   procps,
   icu,
 }: {
-  src,
+  enableNpm ? true,
   version,
-}: let
+  sha256,
+  patches ? [],
+} @ args: let
   inherit (darwin.apple_sdk.frameworks) CoreServices ApplicationServices;
 
   isCross = stdenv.hostPlatform != stdenv.buildPlatform;
@@ -40,7 +42,10 @@
   majorVersion = lib.versions.major version;
   minorVersion = lib.versions.minor version;
 
-  pname = "nodejs";
+  pname =
+    if enableNpm
+    then "nodejs"
+    else "nodejs-slim";
 
   useSharedHttpParser = !stdenv.isDarwin && lib.versionOlder "${majorVersion}.${minorVersion}" "11.4";
 
@@ -66,9 +71,15 @@
     (name: "${lib.getDev sharedLibDeps.${name}}/include/*")
     (builtins.attrNames sharedLibDeps);
 
-  extraConfigFlags = [];
+  extraConfigFlags = lib.optionals (!enableNpm) ["--without-npm"];
   self = stdenv.mkDerivation {
-    inherit pname src version;
+    inherit pname version;
+
+    src = fetchurl {
+      url = "https://nodejs.org/dist/v${version}/node-v${version}.tar.xz";
+      inherit sha256;
+    };
+
     strictDeps = true;
 
     env = lib.optionalAttrs (stdenv.isDarwin && stdenv.isx86_64) {
@@ -89,7 +100,7 @@
       ++ [zlib libuv openssl http-parser icu bash];
 
     nativeBuildInputs =
-      [which pkg-config python3]
+      [which pkg-config python]
       ++ lib.optionals stdenv.isDarwin [xcbuild];
 
     outputs = ["out" "libv8"];
@@ -156,7 +167,15 @@
 
     passthru.interpreterName = "nodejs";
 
+    passthru.pkgs = callPackage ../../node-packages/default.nix {
+      nodejs = self;
+    };
+
     setupHook = ./setup-hook.sh;
+
+    pos = builtins.unsafeGetAttrPos "version" args;
+
+    inherit patches;
 
     doCheck = lib.versionAtLeast version "16"; # some tests fail on v14
 
@@ -176,15 +195,17 @@
     postInstall = ''
       HOST_PATH=$out/bin patchShebangs --host $out
 
-      mkdir -p $out/share/bash-completion/completions
-      ln -s $out/lib/node_modules/npm/lib/utils/completion.sh \
-        $out/share/bash-completion/completions/npm
-      for dir in "$out/lib/node_modules/npm/man/"*; do
-        mkdir -p $out/share/man/$(basename "$dir")
-        for page in "$dir"/*; do
-          ln -rs $page $out/share/man/$(basename "$dir")
+      ${lib.optionalString enableNpm ''
+        mkdir -p $out/share/bash-completion/completions
+        ln -s $out/lib/node_modules/npm/lib/utils/completion.sh \
+          $out/share/bash-completion/completions/npm
+        for dir in "$out/lib/node_modules/npm/man/"*; do
+          mkdir -p $out/share/man/$(basename "$dir")
+          for page in "$dir"/*; do
+            ln -rs $page $out/share/man/$(basename "$dir")
+          done
         done
-      done
+      ''}
 
       # install the missing headers for node-gyp
       cp -r ${lib.concatStringsSep " " copyLibHeaders} $out/include/node
@@ -242,6 +263,7 @@
       maintainers = with maintainers; [goibhniu gilligan cko marsam];
       platforms = platforms.linux ++ platforms.darwin;
       mainProgram = "node";
+      knownVulnerabilities = optional (versionOlder version "18") "This NodeJS release has reached its end of life. See https://nodejs.org/en/about/releases/.";
 
       # Node.js build system does not have separate host and target OS
       # configurations (architectures are defined as host_arch and target_arch,
@@ -252,7 +274,7 @@
       broken = stdenv.buildPlatform.parsed.kernel.name != stdenv.hostPlatform.parsed.kernel.name;
     };
 
-    passthru.python = python3; # to ensure nodeEnv uses the same version
+    passthru.python = python; # to ensure nodeEnv uses the same version
   };
 in
   self
