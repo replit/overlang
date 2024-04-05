@@ -1,7 +1,6 @@
 {
   "nodes": {
     "flake-compat": {
-      "flake": false,
       "locked": {
         "lastModified": 1696426674,
         "narHash": "sha256-kvjfFW7WAETZlt09AgDn1MrtKzP7t90Vf7vypd3OL1U=",
@@ -52,7 +51,9 @@
     },
     "nixpkgs-python": {
       "inputs": {
-        "flake-compat": "flake-compat",
+        "flake-compat": [
+          "flake-compat"
+        ],
         "flake-utils": [
           "flake-utils"
         ],
@@ -74,11 +75,39 @@
         "type": "github"
       }
     },
+    "nixpkgs-ruby": {
+      "inputs": {
+        "flake-compat": [
+          "flake-compat"
+        ],
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1712986883,
+        "narHash": "sha256-uLXukCAjJ0Ews9eMMxH00JcxYWeA/fsjaHn47s/ilgU=",
+        "owner": "bobvanderlinden",
+        "repo": "nixpkgs-ruby",
+        "rev": "605170bed96a011b5264c9c3d124be79b016ce93",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bobvanderlinden",
+        "repo": "nixpkgs-ruby",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
+        "flake-compat": "flake-compat",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
         "nixpkgs-python": "nixpkgs-python",
+        "nixpkgs-ruby": "nixpkgs-ruby",
         "rust-overlay": "rust-overlay"
       }
     },
