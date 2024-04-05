@@ -9,6 +9,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
   outputs = inputs @ {
@@ -20,6 +26,7 @@
       overlays = {
         nodejs = import ./nodejs/overlay.nix;
         python = import ./python/overlay.nix inputs.nixpkgs-python;
+        rust = import ./rust/overlay.nix inputs.rust-overlay;
       };
     }
     // flake-utils.lib.eachDefaultSystem (system: let
@@ -44,5 +51,6 @@
 
       packages.nodejsVersions = pkgs.callPackage ./nodejs {};
       packages.pythonVersions = pkgs.callPackage ./python {inherit (inputs) nixpkgs-python;};
+      packages.rustVersions = pkgs.callPackage ./rust {inherit (inputs) rust-overlay;};
     });
 }
