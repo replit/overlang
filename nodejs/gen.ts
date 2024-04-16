@@ -1,6 +1,8 @@
 import { type Static, Type } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 
+const MIN_NODE_MAJOR_VERSION = 18;
+
 type ParsedVersion = [number, number, number];
 
 const NodeIndexVersion = Type.Object({
@@ -109,5 +111,5 @@ function releaseFilter({ version }: Static<typeof NodeIndexVersion>): boolean {
 	}
 
 	const [major] = parsed;
-	return major >= 21;
+	return major >= MIN_NODE_MAJOR_VERSION;
 }

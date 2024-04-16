@@ -1,3 +1,3 @@
 final: _: {
-  nodeVersions = final.callPackage ./default.nix {};
+  nodejsVersions = final.callPackage ./default.nix {};
 }
